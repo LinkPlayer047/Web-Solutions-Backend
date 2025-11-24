@@ -11,8 +11,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-import contactRoutes from "./routes/contactRoutes.js";
+// Root route
+app.get("/", (req, res) => {
+  res.send("Backend is running!");
+});
 
+// Contact routes
+import contactRoutes from "./routes/contactRoutes.js";
 app.use("/api/contact", contactRoutes);
 
 app.listen(process.env.PORT, () =>
