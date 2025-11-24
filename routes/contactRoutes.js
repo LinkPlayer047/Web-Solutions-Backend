@@ -3,9 +3,10 @@ import { submitContact } from "../controllers/contactController.js";
 
 const router = express.Router();
 
-app.get("/", (req, res) => {
+router.get("/", (req, res) => {
   res.send("Backend is running");
 });
+
 router.post("/submit", submitContact);
 
 export default router;

@@ -1,22 +1,18 @@
-// controllers/contactController.js
+import connectDB from "../config/db.js";
 import nodemailer from "nodemailer";
 import Contact from "../models/Contact.js";
 
-export const submitContact = async (req, res) => {  // <-- yeh name important hai
+export const submitContact = async (req, res) => {
   try {
+    await connectDB(); // <-- ensure DB connection
     const { name, email, organization, phone, website, message } = req.body;
 
-    // Save in DB
     const newMessage = new Contact({ name, email, organization, phone, website, message });
     await newMessage.save();
 
-    // Email Setup
     const transporter = nodemailer.createTransport({
       service: "gmail",
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.EMAIL_PASS
-      }
+      auth: { user: process.env.EMAIL, pass: process.env.EMAIL_PASS },
     });
 
     await transporter.sendMail({
@@ -35,9 +31,8 @@ export const submitContact = async (req, res) => {  // <-- yeh name important ha
     });
 
     res.status(200).json({ message: "Form submitted successfully" });
-
   } catch (err) {
-    console.log("Email Error:", err);
-    res.status(500).json({ error: "Email sending failed" });
+    console.log("Server Error:", err);
+    res.status(500).json({ error: "Server error" });
   }
 };
