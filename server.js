@@ -23,10 +23,15 @@ const __dirname = path.dirname(__filename);
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:5000"],
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:5000",
+      "https://admin-panel-six-vert.vercel.app", // deployed frontend
+    ],
     credentials: true,
   })
 );
+
 
 // Serve uploads folder statically
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
