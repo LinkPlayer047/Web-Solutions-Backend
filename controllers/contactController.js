@@ -1,6 +1,6 @@
 import connectDB from "../config/db.js";
 import nodemailer from "nodemailer";
-import Contact from "../models/Contact.js";
+import Contact from "../models/contact.js";
 
 export const submitContact = async (req, res) => {
   try {
