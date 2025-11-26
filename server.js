@@ -24,13 +24,13 @@ app.use(express.json());
 app.use(
   cors({
     origin: [
-      "http://localhost:3000",
-      "http://localhost:5000",
-      "https://admin-panel-six-vert.vercel.app", // deployed frontend
+      "https://admin-panel-six-vert.vercel.app",
+      "http://localhost:3000" // optional, dev ke liye
     ],
     credentials: true,
   })
 );
+
 
 
 // Serve uploads folder statically
