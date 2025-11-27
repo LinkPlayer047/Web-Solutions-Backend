@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
 
 
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: process.env.EMAIL,
       to: email,
       subject: "Your OTP Code",
       text: `Your OTP code is: ${code}`,
