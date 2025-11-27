@@ -1,41 +1,32 @@
-import Admin from "../models/admin.js";
+// app/api/admin/login/route.js
+import connectDB from "../../../../config/db";
+import Admin from "../../../../models/admin";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+export async function POST(req) {
+  await connectDB();
 
-export const adminLogin = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = await req.json();
     const admin = await Admin.findOne({ email });
 
-    if (!admin) return res.status(404).json({ message: "Admin not found" });
+    if (!admin) {
+      return new Response(JSON.stringify({ message: "Admin not found" }), { status: 404 });
+    }
 
     const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid password" });
+    if (!isMatch) {
+      return new Response(JSON.stringify({ message: "Invalid password" }), { status: 400 });
+    }
 
-    const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
-    });
+    const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
-    res.status(200).json({ token, username: admin.username, email: admin.email });
+    return new Response(
+      JSON.stringify({ token, username: admin.username, email: admin.email }),
+      { status: 200 }
+    );
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return new Response(JSON.stringify({ message: err.message }), { status: 500 });
   }
-};
-
-
-export const createAdmin = async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
-    const existing = await Admin.findOne({ email });
-    if (existing) return res.status(400).json({ message: "Admin already exists" });
-
-    const hashed = await bcrypt.hash(password, 10);
-    const admin = new Admin({ username, email, password: hashed });
-    await admin.save();
-
-    res.status(201).json({ message: "Admin created successfully" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+}

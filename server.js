@@ -60,4 +60,7 @@ app.get("/", (req, res) => {
   res.send("Backend is running successfully!");
 });
 
-connectDB();
+connectDB().then(() => {
+  console.log("✅ MongoDB connected successfully");
+  app.listen(PORT, () => console.log(`🚀 Backend running on port ${PORT}`));
+});

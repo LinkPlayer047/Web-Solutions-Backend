@@ -2,10 +2,10 @@ import connectDB from "../config/db.js";
 import nodemailer from "nodemailer";
 import Contact from "../models/contact.js";
 
-export const submitContact = async (req, res) => {
+export const submitContact = async (req) => {
   try {
-    await connectDB(); // <-- ensure DB connection
-    const { name, email, organization, phone, website, message } = req.body;
+    await connectDB();
+    const { name, email, organization, phone, website, message } = await req.json();
 
     const newMessage = new Contact({ name, email, organization, phone, website, message });
     await newMessage.save();
@@ -30,9 +30,9 @@ export const submitContact = async (req, res) => {
       `,
     });
 
-    res.status(200).json({ message: "Form submitted successfully" });
+    return new Response(JSON.stringify({ message: "Form submitted successfully" }), { status: 200 });
   } catch (err) {
-    console.log("Server Error:", err);
-    res.status(500).json({ error: "Server error" });
+    console.error("Server Error:", err);
+    return new Response(JSON.stringify({ error: "Server error" }), { status: 500 });
   }
 };
